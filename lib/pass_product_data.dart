@@ -7,6 +7,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'custom_dialog.dart';
+import 'home_page.dart';
 import 'models/product_item.dart';
 
 class PassProductData extends StatefulWidget {
@@ -215,6 +216,15 @@ class _PassProductDataState extends State<PassProductData> {
                       buttonText: "OK",
                       title: "Huurrraayy!",
                       description:"Your product has been added successfully!",
+                      avatarColor: Colors.lightGreen,
+                      icon: Icons.sentiment_very_satisfied,
+                      dialogAction: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (BuildContext ctx) => HomePage()));
+                      },
                     ),
                     barrierDismissible: false);
                   },

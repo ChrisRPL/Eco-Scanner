@@ -4,13 +4,17 @@ import 'home_page.dart';
 
 class CustomDialog extends StatelessWidget {
   final String title, description, buttonText;
-  final Image image;
+  final IconData icon;
+  final avatarColor;
+  var dialogAction;
 
   CustomDialog({
     @required this.title,
     @required this.description,
     @required this.buttonText,
-    this.image,
+    this.icon,
+    this.avatarColor,
+    this.dialogAction
   });
 
   dialogContent(BuildContext context) {
@@ -58,13 +62,7 @@ class CustomDialog extends StatelessWidget {
               Align(
                 alignment: Alignment.bottomRight,
                 child: FlatButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pop();
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (BuildContext ctx) => HomePage()));
-                  },
+                  onPressed: dialogAction,
                   child: Text(buttonText),
                 ),
               ),
@@ -75,9 +73,9 @@ class CustomDialog extends StatelessWidget {
           left: Consts.padding,
           right: Consts.padding,
           child: CircleAvatar(
-            backgroundColor: Colors.lightGreen,
+            backgroundColor: avatarColor,
             radius: Consts.avatarRadius,
-            child: Icon(Icons.sentiment_very_satisfied, color: Colors.white, size: 50,),
+            child: Icon(icon, color: Colors.white, size: 50,),
           ),
         ),
       ],

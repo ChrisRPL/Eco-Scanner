@@ -1,12 +1,14 @@
 import 'dart:io';
 
 import 'package:barcode_flutter/barcode_flutter.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:eco_scanner/models/product_item.dart';
 import 'package:eco_scanner/sqlite/db_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../custom_dialog.dart';
 import '../switchers.dart';
 
 class TestedFragment extends StatefulWidget {
@@ -25,6 +27,23 @@ class _TestedFragmentState extends State<TestedFragment> {
   var dbManager ;
   List<ProductItem> list;
 
+  _checkInternetConnectivity() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      showDialog(context: context, builder: (ctx) => CustomDialog(
+        buttonText: "OK I GOT IT",
+        title: "Oooppsss!",
+        description:"It seems like you are not connected to a network! Some information will not be able to be properly loaded!",
+        avatarColor: Colors.orange,
+        icon: Icons.warning,
+        dialogAction: (){
+          Navigator.of(context).pop();
+        },
+      ),
+          barrierDismissible: false);
+    }
+  }
+
 
   Future<List<ProductItem>> products;
   final key = new GlobalKey<ScaffoldState>();
@@ -33,6 +52,7 @@ class _TestedFragmentState extends State<TestedFragment> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _checkInternetConnectivity();
     all = true;
     tested = false;
     non_tested = false;

@@ -1,7 +1,9 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:eco_scanner/start_info_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../InsertBarcode.dart';
+import '../custom_dialog.dart';
 
 
 class HomePageFragment extends StatefulWidget {
@@ -39,6 +41,25 @@ class HomePageFragmentState extends State<HomePageFragment> {
         });
   }
 
+  _checkInternetConnectivity(var action) async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      showDialog(context: context, builder: (ctx) => CustomDialog(
+        buttonText: "OK",
+        title: "Oooppsss!",
+        description:"To use this function, you have to be connected to internet!",
+        avatarColor: Colors.orange,
+        icon: Icons.warning,
+        dialogAction: (){
+          Navigator.of(context).pop();
+        },
+      ),
+          barrierDismissible: false);
+    } else {
+      action();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -68,7 +89,7 @@ class HomePageFragmentState extends State<HomePageFragment> {
                         ),
                       ],),
                     ),
-                    onPressed: scanQr,
+                    onPressed: ()=>_checkInternetConnectivity(scanQr),
                     backgroundColor: Colors.lime,
                   ),
                 ),
@@ -88,7 +109,7 @@ class HomePageFragmentState extends State<HomePageFragment> {
                         ),
                       ],),
                     ),
-                    onPressed: ()=>_showBarcodeInsertSheet(context),
+                    onPressed: ()=>_checkInternetConnectivity(()=>_showBarcodeInsertSheet(context)),
                     backgroundColor: Colors.lime,
                   ),
                 ),

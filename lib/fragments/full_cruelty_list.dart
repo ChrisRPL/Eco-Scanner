@@ -1,8 +1,12 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
+
+import '../custom_dialog.dart';
+import '../home_page.dart';
 
 class FullCrueltyList extends StatefulWidget {
 
@@ -57,10 +61,31 @@ class _FullCrueltyListState extends State<FullCrueltyList> {
     }
   }
 
+  _checkInternetConnectivity() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      showDialog(context: context, builder: (ctx) => CustomDialog(
+        buttonText: "OK",
+        title: "Oooppsss!",
+        description:"It seems like you are not connected to a network! To show informations on this page, you have to connect to the internet!",
+        avatarColor: Colors.orange,
+        icon: Icons.warning,
+        dialogAction: (){
+          Navigator.of(context).pop();
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (BuildContext ctx) => HomePage()));
+        },
+      ),
+          barrierDismissible: false);
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _checkInternetConnectivity();
     editingController = new TextEditingController();
     future = getCrueltyList();
   }

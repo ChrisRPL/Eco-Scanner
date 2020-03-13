@@ -4,6 +4,7 @@ import 'package:eco_scanner/sqlite/db_manager.dart';
 import 'package:flutter/material.dart';
 
 import 'custom_dialog.dart';
+import 'home_page.dart';
 import 'models/product_item.dart';
 
 class ProductReview extends StatefulWidget {
@@ -254,6 +255,15 @@ class ProductReviewState extends State<ProductReview> {
                           buttonText: "OK",
                           title: "Huurrraayy!",
                           description:"Your product has been added successfully!",
+                          avatarColor: Colors.lightGreen,
+                          icon: Icons.sentiment_very_satisfied,
+                          dialogAction: () {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (BuildContext ctx) => HomePage()));
+                          },
                         ),
                         barrierDismissible: false);
                       },
