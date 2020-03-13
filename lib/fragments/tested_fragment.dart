@@ -8,8 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../custom_dialog.dart';
-import '../switchers.dart';
+import 'package:eco_scanner/widgets/custom_dialog.dart';
 
 class TestedFragment extends StatefulWidget {
 

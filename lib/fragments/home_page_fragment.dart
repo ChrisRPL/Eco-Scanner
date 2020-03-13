@@ -1,9 +1,10 @@
 import 'package:connectivity/connectivity.dart';
-import 'package:eco_scanner/start_info_widget.dart';
+import 'package:eco_scanner/widgets/insert_barcode.dart';
+import 'package:eco_scanner/widgets/start_info_widget.dart';
 import 'package:flutter/material.dart';
 
-import '../InsertBarcode.dart';
-import '../custom_dialog.dart';
+
+import 'package:eco_scanner/widgets/custom_dialog.dart';
 
 
 class HomePageFragment extends StatefulWidget {

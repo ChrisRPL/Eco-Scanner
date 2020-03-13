@@ -1,11 +1,12 @@
 import 'package:barcode_flutter/barcode_flutter.dart';
-import 'package:eco_scanner/pass_product_data.dart';
+import 'package:eco_scanner/models/product_item.dart';
+import 'package:eco_scanner/widgets/pass_product_data.dart';
 import 'package:eco_scanner/sqlite/db_manager.dart';
 import 'package:flutter/material.dart';
 
-import 'custom_dialog.dart';
-import 'home_page.dart';
-import 'models/product_item.dart';
+import 'package:eco_scanner/widgets/custom_dialog.dart';
+import 'package:eco_scanner/main_screens/home_page.dart';
+
 
 class ProductReview extends StatefulWidget {
 

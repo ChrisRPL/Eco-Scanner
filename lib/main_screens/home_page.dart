@@ -1,5 +1,9 @@
-import 'package:eco_scanner/loading_page.dart';
-import 'package:eco_scanner/product_review.dart';
+import 'package:eco_scanner/fragments/full_cruelty_list.dart';
+import 'package:eco_scanner/fragments/home_page_fragment.dart';
+import 'package:eco_scanner/fragments/tested_fragment.dart';
+import 'package:eco_scanner/main_screens/loading_page.dart';
+import 'package:eco_scanner/main_screens/product_review.dart';
+import 'package:eco_scanner/models/drawer_item.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:barcode_scan/barcode_scan.dart';
@@ -7,11 +11,8 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'drawer.dart';
-import 'fragments/full_cruelty_list.dart';
-import 'fragments/home_page_fragment.dart';
-import 'fragments/tested_fragment.dart';
-import 'models/drawer_item.dart';
+import 'package:eco_scanner/widgets/drawer.dart';
+
 
 class HomePage extends StatefulWidget {
 

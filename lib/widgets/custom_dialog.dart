@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'home_page.dart';
+import 'package:eco_scanner/main_screens/home_page.dart';
 
 class CustomDialog extends StatelessWidget {
   final String title, description, buttonText;

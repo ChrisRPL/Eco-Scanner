@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:splashscreen/splashscreen.dart';
 
-import 'home_page.dart';
+import 'package:eco_scanner/main_screens/home_page.dart';
 
 
 void main() =>  runApp(MaterialApp(

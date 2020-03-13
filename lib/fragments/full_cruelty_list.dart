@@ -5,8 +5,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
 
-import '../custom_dialog.dart';
-import '../home_page.dart';
+import 'package:eco_scanner/widgets/custom_dialog.dart';
+import 'package:eco_scanner/main_screens/home_page.dart';
 
 class FullCrueltyList extends StatefulWidget {
 

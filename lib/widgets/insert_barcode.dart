@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'loading_page.dart';
+import 'package:eco_scanner/main_screens/loading_page.dart';
 
 class InsertBarcode extends StatefulWidget {
   var qrFunction;
