@@ -23,7 +23,7 @@ class _TestedFragmentState extends State<TestedFragment> {
   bool all;
   bool tested;
   bool non_tested;
-  var dbManager ;
+  var dbManager;
   List<ProductItem> list;
 
   _checkInternetConnectivity() async {
@@ -57,11 +57,10 @@ class _TestedFragmentState extends State<TestedFragment> {
     non_tested = false;
     dbManager = DbManager();
     products = dbManager.getAllProducts();
-    debugPrint("INIT STATE");
   }
 
 
-  Widget _buildElement(BuildContext context) {
+  Widget _buildProductsList(BuildContext context) {
     return Column(
       children: <Widget>[
         Container(
@@ -259,18 +258,12 @@ class _TestedFragmentState extends State<TestedFragment> {
                     ),
                   );
                 }
-
-
                 return Container(
                     height: MediaQuery.of(context).size.height,
                     width: MediaQuery.of(context).size.width,
                     child: Center(
                         child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),))
                 );
-
-
-
-
               }
           ),
         ),
@@ -287,7 +280,7 @@ class _TestedFragmentState extends State<TestedFragment> {
       body: Builder(
         builder: (ctx) => Container(
           color: Colors.lightGreen,
-          child: _buildElement(context)
+          child: _buildProductsList(context)
         ),
       ),
     );

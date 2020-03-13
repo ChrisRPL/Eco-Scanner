@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:eco_scanner/main_screens/product_review.dart';
 import 'package:eco_scanner/models/product_item.dart';
 import 'package:eco_scanner/sqlite/db_manager.dart';
 import 'package:flutter/material.dart';

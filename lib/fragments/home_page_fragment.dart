@@ -9,23 +9,21 @@ import 'package:eco_scanner/widgets/custom_dialog.dart';
 
 class HomePageFragment extends StatefulWidget {
   var scanQr;
-  var qrFunction;
+  var checkProductInWeb;
 
-  HomePageFragment(this.scanQr, this.qrFunction);
+  HomePageFragment(this.scanQr, this.checkProductInWeb);
 
   @override
   HomePageFragmentState createState() {
-    return new HomePageFragmentState(scanQr, qrFunction);
+    return new HomePageFragmentState(scanQr, checkProductInWeb);
   }
 }
 
 class HomePageFragmentState extends State<HomePageFragment> {
-  String result = "Check your product, if is animal-tested!";
-
   var scanQr;
-  var qrFunction;
+  var checkProductInWeb;
 
-  HomePageFragmentState(this.scanQr, this.qrFunction);
+  HomePageFragmentState(this.scanQr, this.checkProductInWeb);
 
 
   _showBarcodeInsertSheet(BuildContext context) {
@@ -37,7 +35,7 @@ class HomePageFragmentState extends State<HomePageFragment> {
         builder: (ctx) {
           return GestureDetector(
             onTap: (){},
-            child: InsertBarcode(qrFunction)
+            child: InsertBarcode(checkProductInWeb)
           );
         });
   }
@@ -70,7 +68,7 @@ class HomePageFragmentState extends State<HomePageFragment> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            startInfo(),
+            StartInfo(),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[

@@ -42,21 +42,6 @@ class DbManager {
     return productItem;
   }
 
-
-  Future<List<ProductItem>> getCrueltyProducts() async {
-    var dbClient = await db;
-    List<Map> maps = await dbClient.query(TABLE, columns: [ID, NAME, COMPANY_NAME, IMAGE_URL, BARCODE, IS_CRUELTY]);
-    //List<Map> maps = await dbClient.query("SELECT * FROM $TABLE");
-    List<ProductItem> products = [];
-    if(maps.length>0) {
-      for(int i=0; i<maps.length; i++){
-        if(ProductItem.fromMap(maps[i]).isCruelty==1)
-          products.add(ProductItem.fromMap(maps[i]));
-      }
-    }
-    return products;
-  }
-
   Future<List<ProductItem>> getAllProducts() async {
     var dbClient = await db;
     List<Map> maps = await dbClient.query(TABLE, columns: [ID, NAME, COMPANY_NAME, IMAGE_URL, BARCODE, IS_CRUELTY]);
@@ -65,20 +50,6 @@ class DbManager {
     if(maps.length>0) {
       for(int i=0; i<maps.length; i++){
         products.add(ProductItem.fromMap(maps[i]));
-      }
-    }
-    return products;
-  }
-
-  Future<List<ProductItem>> getCrueltyFreeProducts() async {
-    var dbClient = await db;
-    List<Map> maps = await dbClient.query(TABLE, columns: [ID, NAME, COMPANY_NAME, IMAGE_URL, BARCODE, IS_CRUELTY]);
-    //List<Map> maps = await dbClient.query("SELECT * FROM $TABLE");
-    List<ProductItem> products = [];
-    if(maps.length>0) {
-      for(int i=0; i<maps.length; i++){
-        if(ProductItem.fromMap(maps[i]).isCruelty==0)
-            products.add(ProductItem.fromMap(maps[i]));
       }
     }
     return products;

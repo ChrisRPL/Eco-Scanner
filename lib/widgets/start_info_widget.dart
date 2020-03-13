@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class startInfo extends StatelessWidget {
+class StartInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String result = "Check your product, if is animal-tested!";
@@ -80,15 +80,9 @@ class startInfo extends StatelessWidget {
                     Text(" Cats and dogs are being used in experiments", textAlign: TextAlign.left, style: TextStyle(fontFamily: "OpenSans", fontWeight: FontWeight.w300),)
                   ],),
                 ),
-
-
-
-
               ],
-
             ),
             elevation: 10,
-
           ),
     );
   }

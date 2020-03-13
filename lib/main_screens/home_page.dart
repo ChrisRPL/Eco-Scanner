@@ -35,37 +35,47 @@ class HomePageState extends State<HomePage> {
 
 
   bool findCompanyInProduct(var listOfMatches, var productName) {
-    var isCrueltyFree = false;
+    var isCruelty = false;
+
+    //REGULAR EXPRESSION TO EXTRACT SECOND COMPANY NAME IF EXISTS
     RegExp regExp4 = RegExp("\\(.+\\)");
 
     for (int i = 0; i < listOfMatches.length; i++) {
+
+      //EXTRACT COMPANY NAME FROM HTML AND CLEAN STRING
       var crueltyCompany = listOfMatches[i].group(0).replaceAll("amp;", "")
           .replaceAll("\\u0027", "'").replaceAll("\"com_ComName\":", "")
           .replaceAll("\"", "");
+
       if (crueltyCompany.contains("(")) {
+
         var companyFirstName = crueltyCompany.replaceAll(
             regExp4.allMatches(crueltyCompany).toList()[0].group(0), "")
             .replaceAll(" ", "")
             .toLowerCase();
+
         var secondCompanyName = regExp4.allMatches(crueltyCompany).toList()[0]
             .group(0).replaceAll("(", "").replaceAll(")", "").replaceAll(
             " ", "")
             .toLowerCase();
-        isCrueltyFree =
-        (productName.toString().toLowerCase().replaceAll(" ", "").contains(
+
+        isCruelty = (productName.toString().toLowerCase().replaceAll(" ", "").contains(
             secondCompanyName) ||
             productName.toString().toLowerCase().replaceAll(" ", "").contains(
                 companyFirstName));
-        if (isCrueltyFree) {
+
+        // BREAK THE LOOP IF PRODUCT IS CRUELTY
+        if (isCruelty) {
           debugPrint(crueltyCompany);
           companyName = crueltyCompany;
           break;
         }
       } else {
-        isCrueltyFree =
-            productName.toString().toLowerCase().contains(
+
+        isCruelty = productName.toString().toLowerCase().contains(
                 crueltyCompany.toLowerCase());
-        if (isCrueltyFree) {
+
+        if (isCruelty) {
           companyName = crueltyCompany;
           debugPrint(productName);
           debugPrint(crueltyCompany);
@@ -73,60 +83,67 @@ class HomePageState extends State<HomePage> {
         }
       }
     }
-    return isCrueltyFree;
+    return isCruelty;
   }
 
-  Future initiate(String barcode) async {
+  Future getProductFromWeb(String barcode) async {
 
     var dataToExtract;
     var imageUrl;
     var productName;
-    var isCrueltyFree = false;
+    var isCruelty = false;
 
+    //SHOW LOADING SCREEN WHILE SEARCHING FOR DATA
     Navigator.push(context,
         MaterialPageRoute(builder: (BuildContext ctx) => LoadingPage()));
-
 
 
     var client = http.Client();
     Response response = await client.get("https://features.peta.org/cruelty-free-company-search/cruelty_free_companies_search.aspx?Dotest=8");
     var document = parse(response.body);
+
     Response response2 = await client.get("https://www.barcodelookup.com/" + barcode);
-    debugPrint(barcode);
     var document2 = parse(response2.body);
+
+    //REGULAR EXPRESSION FOR EXTRACTING COMPANY FROM HTML
     RegExp regExp = RegExp("\"com_ComName\":\"[^,]+\"");
+
     var listOfMatches = regExp.allMatches(document.outerHtml).toList();
 
+    //REGULAR EXPRESSION FOR EXTRACTING IMAGE URL FROM HTML
     RegExp regExp2 = RegExp("<img src=\.+>");
+    //REGULAR EXPRESSION FOR EXTRACTING PRODUCT NAME URL FROM HTML
     RegExp regExp3 = RegExp("alt=\"\.+\" id");
     dataToExtract = regExp2.allMatches(document2.outerHtml).toList()[1].group(0);
     
 
+    //IF PRODUCT DATA NOT FOUND
     if(dataToExtract.contains("Search for another product")) {
+      //SEARCF FOR PRODUCT NAME IN THE BROWSER
       response2 = await client.get("https://pl.search.yahoo.com/search?q=" + barcode);
       document2 = parse(response2.body);
+
+      //GET FIRST RESULT WHICH CONTAINS PRODUCT NAME
       String product = document2.querySelectorAll("h3.title")[0].text.length > 4 ? document2.querySelectorAll("h3.title")[0].text.split(" ")[0] + " " + document2.querySelectorAll("h3.title")[0].text.split(" ")[1] + " " +
           document2.querySelectorAll("h3.title")[0].text.split(" ")[2]+ " " + document2.querySelectorAll("h3.title")[0].text.split(" ")[3] : document2.querySelectorAll("h3.title")[0].text;
-      isCrueltyFree = findCompanyInProduct(listOfMatches, product);
+
+      isCruelty = findCompanyInProduct(listOfMatches, product);
       debugPrint(document2.querySelectorAll("h3.title")[0].text);
       imageUrl="";
       productName = "";
       companyName="";
     } else {
       imageUrl = dataToExtract.replaceAll("<img src=\"", "").split("\"")[0];
-      productName =
-      regExp3.allMatches(dataToExtract).toList()[0].group(0).split("\"")[1];
-      isCrueltyFree = findCompanyInProduct(listOfMatches, productName);
+      productName = regExp3.allMatches(dataToExtract).toList()[0].group(0).split("\"")[1];
+      isCruelty = findCompanyInProduct(listOfMatches, productName);
     }
 
-    !isCrueltyFree ? _incrementCrueltyFreeProducts() : _incrementCrueltyProducts();
+    !isCruelty ? _incrementCrueltyFreeProducts() : _incrementCrueltyProducts();
 
-    debugPrint(imageUrl);
-    debugPrint(productName);
-    debugPrint(isCrueltyFree.toString());
+    //SHOW PAGE WITH PRODUCT REVIEW
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (BuildContext ctx) => ProductReview(name: productName, imageUrl: imageUrl, isCruelty: isCrueltyFree, companyName: companyName, productBarcode: barcode,)));
+      MaterialPageRoute(builder: (BuildContext ctx) => ProductReview(name: productName, imageUrl: imageUrl, isCruelty: isCruelty, companyName: companyName, productBarcode: barcode,)));
 
 
 
@@ -156,7 +173,7 @@ class HomePageState extends State<HomePage> {
       setState(() {
         result = qrResult;
         _incrementQrScans();
-        initiate(qrResult);
+        getProductFromWeb(qrResult);
       });
     } on PlatformException catch (ex) {
       if (ex.code == BarcodeScanner.CameraAccessDenied) {
@@ -187,7 +204,7 @@ class HomePageState extends State<HomePage> {
   _getDrawerItemWidget(int pos) {
     switch (pos) {
       case 0:
-        return new HomePageFragment(_scanQR, initiate);
+        return new HomePageFragment(_scanQR, getProductFromWeb);
       case 1:
         return new TestedFragment();
       case 2:
@@ -200,7 +217,7 @@ class HomePageState extends State<HomePage> {
 
   onSelectItem(int index) {
     setState(() => _selectedDrawerIndex = index);
-    Navigator.of(context).pop(); // close the drawer
+    Navigator.of(context).pop();
   }
 
 

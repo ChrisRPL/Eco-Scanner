@@ -45,22 +45,6 @@ class ProductReviewState extends State<ProductReview> {
   Widget build(BuildContext context) {
     dbManager = DbManager();
 
-    Widget _onSuccessfullyAddedProduct() {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(margin: EdgeInsets.only(right: 5),child: Icon(Icons.check_circle, color: Colors.white,)),
-          Text("Added product successfully!", style: TextStyle(fontFamily: "OpenSans" ,fontWeight: FontWeight.normal, color: Colors.white, shadows: [
-            Shadow(
-              blurRadius: 1.0,
-              color: Colors.black26,
-              offset: Offset(1.0, 1.0),
-            ),
-          ])),
-        ],
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -141,7 +125,6 @@ class ProductReviewState extends State<ProductReview> {
                         params: Code39BarCodeParams(
                           widget.productBarcode,
                           lineWidth: 0.6,
-                          altText: "Siema",
                           barHeight: 50.0,
                           withText: true,
                         ),
@@ -195,7 +178,6 @@ class ProductReviewState extends State<ProductReview> {
                         params: Code39BarCodeParams(
                         widget.productBarcode,
                         lineWidth: 0.6,
-                        altText: "Siema",
                         barHeight: 50.0,
                         withText: true,
                         ),

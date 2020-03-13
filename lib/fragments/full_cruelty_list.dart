@@ -16,9 +16,9 @@ class FullCrueltyList extends StatefulWidget {
 
 class _FullCrueltyListState extends State<FullCrueltyList> {
   TextEditingController editingController;
-  List mydata;
-  List unfilterData;
-  Future future;
+  List products;
+  List unfilterProducts;
+  Future getCompanyNames;
 
 
   Future getCrueltyList() async{
@@ -28,35 +28,35 @@ class _FullCrueltyListState extends State<FullCrueltyList> {
     RegExp regExp = RegExp("\"com_ComName\":\"[^,]+\"");
     var listOfMatches = regExp.allMatches(document.outerHtml).toList();
     setState(() {
-      mydata = listOfMatches;
-      unfilterData = mydata;
+      products = listOfMatches;
+      unfilterProducts = products;
     });
     return listOfMatches;
   }
 
-  searchData(str) {
-    debugPrint("SEARCH DATA");
+  searchCompanyByName(str) {
     var strExist = str.length > 0 ? true : false;
 
-    debugPrint(unfilterData.length.toString() + " " + mydata.length.toString());
     if (strExist) {
       var filterData = [];
-      for (var i = 0; i < unfilterData.length; i++) {
-        String word = unfilterData[i].group(0).replaceAll("amp;", "")
+      for (var i = 0; i < unfilterProducts.length; i++) {
+
+        //EXTRACT COMPANY NAME FROM HTML AND CLEAN STRING
+        String word = unfilterProducts[i].group(0).replaceAll("amp;", "")
             .replaceAll("\\u0027", "'").replaceAll("\"com_ComName\":", "")
             .replaceAll("\"", "").replaceAll("&#233;", "e").replaceAll("&#246;", "o").replaceAll("&#244;;", "e");
+
         if (word.toLowerCase().contains(str) || word.toUpperCase().contains(str)) {
-          filterData.add(unfilterData[i]);
+          filterData.add(unfilterProducts[i]);
         }
       }
 
       setState(() {
-        this.mydata = filterData;
+        this.products = filterData;
       });
     } else {
       setState(() {
-        //
-        this.mydata = this.unfilterData;
+        this.products = this.unfilterProducts;
       });
     }
   }
@@ -87,7 +87,7 @@ class _FullCrueltyListState extends State<FullCrueltyList> {
     super.initState();
     _checkInternetConnectivity();
     editingController = new TextEditingController();
-    future = getCrueltyList();
+    getCompanyNames = getCrueltyList();
   }
 
 
@@ -164,7 +164,7 @@ class _FullCrueltyListState extends State<FullCrueltyList> {
           Container(
             margin: EdgeInsets.only(left: 5, right: 5, bottom: 5),
             child: TextField(
-              onChanged: (_) =>searchData(editingController.text.toString()),
+              onChanged: (_) =>searchCompanyByName(editingController.text.toString()),
               controller: editingController,
               decoration: InputDecoration(
                   labelStyle: TextStyle(
@@ -179,16 +179,16 @@ class _FullCrueltyListState extends State<FullCrueltyList> {
           ),
       Expanded(
         child: FutureBuilder(
-        future: future,
+        future: getCompanyNames,
         builder: (context, snapshot) {
           if(snapshot.hasData) {
             return ListView.builder(
-              itemCount: mydata.length,
+              itemCount: products.length,
               itemBuilder: (context, index) {
                 return Card(
                   child: ListTile(
                     leading: Icon(Icons.work),
-                    title: Text(mydata[index].group(0).replaceAll("amp;", "")
+                    title: Text(products[index].group(0).replaceAll("amp;", "")
                         .replaceAll("\\u0027", "'").replaceAll("\"com_ComName\":", "")
                         .replaceAll("\"", "").replaceAll("&#233;", "e").replaceAll("&#246;", "o").replaceAll("&#244;", "e")),
                   ),

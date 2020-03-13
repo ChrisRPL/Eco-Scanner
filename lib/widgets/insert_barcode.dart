@@ -3,23 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:eco_scanner/main_screens/loading_page.dart';
 
 class InsertBarcode extends StatefulWidget {
-  var qrFunction;
+  var getProductFromWeb;
 
-  InsertBarcode(this.qrFunction);
+  InsertBarcode(this.getProductFromWeb);
 
   @override
-  _InsertBarcodeState createState() => _InsertBarcodeState(this.qrFunction);
+  _InsertBarcodeState createState() => _InsertBarcodeState(this.getProductFromWeb);
 }
 
 class _InsertBarcodeState extends State<InsertBarcode> {
-  var qrFunction;
+  var getProductFromWeb;
 
-  _InsertBarcodeState(this.qrFunction);
+  _InsertBarcodeState(this.getProductFromWeb);
   TextEditingController barcode = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-
 
     return SingleChildScrollView(
       child: Card(
@@ -75,7 +74,7 @@ class _InsertBarcodeState extends State<InsertBarcode> {
               Container(
                 margin: EdgeInsets.only(top: 10),
                 child: OutlineButton(onPressed: (){
-                  qrFunction(barcode.text);
+                  getProductFromWeb(barcode.text);
                   Navigator.of(context).pop();
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (BuildContext ctx) => LoadingPage()));
