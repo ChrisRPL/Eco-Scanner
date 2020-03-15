@@ -1,4 +1,4 @@
-package com.example.eco_scanner
+package com.eco_scanner
 
 import android.os.Bundle
 

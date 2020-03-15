@@ -4,6 +4,7 @@ import 'package:eco_scanner/fragments/tested_fragment.dart';
 import 'package:eco_scanner/main_screens/loading_page.dart';
 import 'package:eco_scanner/main_screens/product_review.dart';
 import 'package:eco_scanner/models/drawer_item.dart';
+import 'package:eco_scanner/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:barcode_scan/barcode_scan.dart';
@@ -122,10 +123,33 @@ class HomePageState extends State<HomePage> {
       //SEARCF FOR PRODUCT NAME IN THE BROWSER
       response2 = await client.get("https://pl.search.yahoo.com/search?q=" + barcode);
       document2 = parse(response2.body);
+      String product="";
 
       //GET FIRST RESULT WHICH CONTAINS PRODUCT NAME
-      String product = document2.querySelectorAll("h3.title")[0].text.length > 4 ? document2.querySelectorAll("h3.title")[0].text.split(" ")[0] + " " + document2.querySelectorAll("h3.title")[0].text.split(" ")[1] + " " +
-          document2.querySelectorAll("h3.title")[0].text.split(" ")[2]+ " " + document2.querySelectorAll("h3.title")[0].text.split(" ")[3] : document2.querySelectorAll("h3.title")[0].text;
+      try {
+        product = document2.querySelectorAll("h3.title")[0].text.length >
+            4
+            ? document2.querySelectorAll("h3.title")[0].text.split(" ")[0] +
+            " " + document2.querySelectorAll("h3.title")[0].text.split(" ")[1] +
+            " " +
+            document2.querySelectorAll("h3.title")[0].text.split(" ")[2] + " " +
+            document2.querySelectorAll("h3.title")[0].text.split(" ")[3]
+            : document2.querySelectorAll("h3.title")[0].text;
+      }catch(exception){
+        Navigator.of(context).pop();
+        showDialog(context: context, builder: (ctx) => CustomDialog(
+          buttonText: "OK I GOT IT",
+          title: "Oooppsss!",
+          description:"It looks like we could not find that product in the database!",
+          avatarColor: Colors.red,
+          icon: Icons.sentiment_dissatisfied,
+          dialogAction: () {
+            Navigator.of(context).pop();
+          },
+        ),
+            barrierDismissible: false);
+        return;
+    }
 
       isCruelty = findCompanyInProduct(listOfMatches, product);
       debugPrint(document2.querySelectorAll("h3.title")[0].text);
@@ -133,9 +157,26 @@ class HomePageState extends State<HomePage> {
       productName = "";
       companyName="";
     } else {
-      imageUrl = dataToExtract.replaceAll("<img src=\"", "").split("\"")[0];
-      productName = regExp3.allMatches(dataToExtract).toList()[0].group(0).split("\"")[1];
-      isCruelty = findCompanyInProduct(listOfMatches, productName);
+      try {
+        imageUrl = dataToExtract.replaceAll("<img src=\"", "").split("\"")[0];
+        productName =
+        regExp3.allMatches(dataToExtract).toList()[0].group(0).split("\"")[1];
+        isCruelty = findCompanyInProduct(listOfMatches, productName);
+      }catch(exception){
+        Navigator.of(context).pop();
+        showDialog(context: context, builder: (ctx) => CustomDialog(
+          buttonText: "OK I GOT IT",
+          title: "Oooppsss!",
+          description:"It looks like we could not find that product in the database!",
+          avatarColor: Colors.red,
+          icon: Icons.sentiment_dissatisfied,
+          dialogAction: () {
+            Navigator.of(context).pop();
+          },
+        ),
+            barrierDismissible: false);
+        return;
+      }
     }
 
     !isCruelty ? _incrementCrueltyFreeProducts() : _incrementCrueltyProducts();

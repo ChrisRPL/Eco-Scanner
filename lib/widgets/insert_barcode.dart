@@ -16,6 +16,7 @@ class _InsertBarcodeState extends State<InsertBarcode> {
 
   _InsertBarcodeState(this.getProductFromWeb);
   TextEditingController barcode = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -42,42 +43,48 @@ class _InsertBarcodeState extends State<InsertBarcode> {
                 ),
                 child: Image.asset("assets/product.png", fit: BoxFit.fitWidth,),
               ),
-              TextFormField(
-                controller: barcode,
-                decoration: new InputDecoration(
-                  labelText: "Insert barcode",
-                  labelStyle: TextStyle(
-                      color: Colors.green
-                  ),
-                  fillColor: Colors.white,
-                  enabledBorder: new OutlineInputBorder(
-                    borderRadius: new BorderRadius.circular(25.0),
-                    borderSide: new BorderSide(
+              Form(
+                key: _formKey,
+                child: TextFormField(
+                  controller: barcode,
+                  decoration: new InputDecoration(
+                    labelText: "Insert barcode",
+                    labelStyle: TextStyle(
+                        color: Colors.green
+                    ),
+                    fillColor: Colors.white,
+                    enabledBorder: new OutlineInputBorder(
+                      borderRadius: new BorderRadius.circular(25.0),
+                      borderSide: new BorderSide(
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: new BorderRadius.circular(25.0),
+                      borderSide: new BorderSide(
+                        color: Colors.green,
+                      ),
                     ),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: new BorderRadius.circular(25.0),
-                    borderSide: new BorderSide(
-                      color: Colors.green,
-                    ),
-                  ),
+                  validator: (val) {
+                    if(val.length==0) {
+                      return "Please provide valid barcode!";
+                    }else{
+                      return null;
+                    }
+                  },
+                  keyboardType: TextInputType.number,
                 ),
-                validator: (val) {
-                  if(val.length==0) {
-                    return "Please provide valid barcode!";
-                  }else{
-                    return null;
-                  }
-                },
-                keyboardType: TextInputType.number,
               ),
               Container(
                 margin: EdgeInsets.only(top: 10),
                 child: OutlineButton(onPressed: (){
-                  getProductFromWeb(barcode.text);
-                  Navigator.of(context).pop();
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext ctx) => LoadingPage()));
+                  if(_formKey.currentState.validate()) {
+                    getProductFromWeb(barcode.text);
+                    Navigator.of(context).pop();
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(
+                            builder: (BuildContext ctx) => LoadingPage()));
+                  }
                   },
                   splashColor: Colors.lime,
                   shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(8.0)),

@@ -29,6 +29,7 @@ class _PassProductDataState extends State<PassProductData> {
   TextEditingController productName, companyName;
 
   _PassProductDataState(this.isCruelty, this.barcode);
+  final _formKey = GlobalKey<FormState>();
 
 
 
@@ -143,90 +144,118 @@ class _PassProductDataState extends State<PassProductData> {
                 ),
               ],
             ),
-              Container(
-                margin: EdgeInsets.only(top: 10),
-                child: TextFormField(
-                  controller: productName,
-                  decoration: new InputDecoration(
-                    labelText: "Product name",
-                    labelStyle: TextStyle(
-                        color: Colors.green
-                    ),
-                    fillColor: Colors.white,
-                    enabledBorder: new OutlineInputBorder(
-                      borderRadius: new BorderRadius.circular(25.0),
-                      borderSide: new BorderSide(
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(top: 10),
+                      child: TextFormField(
+                        controller: productName,
+                        decoration: new InputDecoration(
+                          labelText: "Product name",
+                          labelStyle: TextStyle(
+                              color: Colors.green
+                          ),
+                          fillColor: Colors.white,
+                          enabledBorder: new OutlineInputBorder(
+                            borderRadius: new BorderRadius.circular(25.0),
+                            borderSide: new BorderSide(
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: new BorderRadius.circular(25.0),
+                            borderSide: new BorderSide(
+                              color: Colors.green,
+                            ),
+                          ),
+                        ),
+                        validator: (val) {
+                          if(val.length==0) {
+                            return "Please provide valid product name!";
+                          }else{
+                            return null;
+                          }
+                        },
+                        keyboardType: TextInputType.text,
                       ),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: new BorderRadius.circular(25.0),
-                      borderSide: new BorderSide(
-                        color: Colors.green,
+                    Container(
+                      margin: EdgeInsets.only(top: 10, bottom: 10),
+                      child: TextFormField(
+                        controller: companyName,
+                        decoration: new InputDecoration(
+                          labelText: "Company name",
+                          labelStyle: TextStyle(
+                              color: Colors.green
+                          ),
+                          fillColor: Colors.white,
+                          enabledBorder: new OutlineInputBorder(
+                            borderRadius: new BorderRadius.circular(25.0),
+                            borderSide: new BorderSide(
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: new BorderRadius.circular(25.0),
+                            borderSide: new BorderSide(
+                              color: Colors.green,
+                            ),
+                          ),
+                        ),
+                        validator: (val) {
+                          if(val.length==0) {
+                            return "Please provide valid company name!";
+                          }else{
+                            return null;
+                          }
+                        },
+                        keyboardType: TextInputType.text,
                       ),
                     ),
-                  ),
-                  validator: (val) {
-                    if(val.length==0) {
-                      return "Please provide valid product name!";
-                    }else{
-                      return null;
-                    }
-                  },
-                  keyboardType: TextInputType.text,
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 10, bottom: 10),
-                child: TextFormField(
-                  controller: companyName,
-                  decoration: new InputDecoration(
-                    labelText: "Company name",
-                    labelStyle: TextStyle(
-                        color: Colors.green
-                    ),
-                    fillColor: Colors.white,
-                    enabledBorder: new OutlineInputBorder(
-                      borderRadius: new BorderRadius.circular(25.0),
-                      borderSide: new BorderSide(
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: new BorderRadius.circular(25.0),
-                      borderSide: new BorderSide(
-                        color: Colors.green,
-                      ),
-                    ),
-                  ),
-                  validator: (val) {
-                    if(val.length==0) {
-                      return "Please provide valid company name!";
-                    }else{
-                      return null;
-                    }
-                  },
-                  keyboardType: TextInputType.text,
+                  ],
                 ),
               ),
               Container(
                 margin: EdgeInsets.only(top: 10),
                 child: OutlineButton(
                   onPressed: (){
-                    dbManager.save(ProductItem(DateTime.now().millisecond, productName.text, companyName.text, _image.path, barcode, isCruelty ? 1 : 0));
-                    showDialog(context: context, builder: (ctx) => CustomDialog(
-                      buttonText: "OK",
-                      title: "Huurrraayy!",
-                      description:"Your product has been added successfully!",
-                      avatarColor: Colors.lightGreen,
-                      icon: Icons.sentiment_very_satisfied,
-                      dialogAction: () {
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (BuildContext ctx) => HomePage()));
-                      },
-                    ),
-                    barrierDismissible: false);
+                    if(_image==null) {
+                      showDialog(context: context, builder: (ctx) =>
+                          CustomDialog(
+                            buttonText: "OK I GOT IT",
+                            title: "Oooppsss!",
+                            description: "Please add product image to add product to the list!",
+                            avatarColor: Colors.orange,
+                            icon: Icons.warning,
+                            dialogAction: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          barrierDismissible: false);
+                    }else if(_formKey.currentState.validate()) {
+                      dbManager.save(ProductItem(DateTime
+                          .now()
+                          .millisecond, productName.text, companyName.text,
+                          _image.path, barcode, isCruelty ? 1 : 0));
+                      showDialog(context: context, builder: (ctx) =>
+                          CustomDialog(
+                            buttonText: "OK",
+                            title: "Huurrraayy!",
+                            description: "Your product has been added successfully!",
+                            avatarColor: Colors.lightGreen,
+                            icon: Icons.sentiment_very_satisfied,
+                            dialogAction: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext ctx) =>
+                                          HomePage()));
+                            },
+                          ),
+                          barrierDismissible: false);
+                    }
                   },
                   splashColor: Colors.lime,
                   shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(8.0)),
