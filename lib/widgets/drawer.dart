@@ -12,7 +12,7 @@ class MainDrawer extends StatefulWidget {
 
 class _MainDrawerState extends State<MainDrawer> {
   var totalScans, crueltyScans, crueltyFreeScans;
-  _getTotalScans() async{
+  _getTotalScans() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int counter = (prefs.getInt('totalScans') ?? 0);
     setState(() {
@@ -20,7 +20,7 @@ class _MainDrawerState extends State<MainDrawer> {
     });
   }
 
-  _getTotalCrueltyScans() async{
+  _getTotalCrueltyScans() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int counter = (prefs.getInt('totalCrueltyScans') ?? 0);
     setState(() {
@@ -28,7 +28,7 @@ class _MainDrawerState extends State<MainDrawer> {
     });
   }
 
-  _getTotalCrueltyFreeScans() async{
+  _getTotalCrueltyFreeScans() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int counter = (prefs.getInt('totalCrueltyFreeScans') ?? 0);
     setState(() {
@@ -60,19 +60,25 @@ class _MainDrawerState extends State<MainDrawer> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Padding(padding: EdgeInsets.only(top: 15),),
+                  Padding(
+                    padding: EdgeInsets.only(top: 15),
+                  ),
                   Text(
                     'Eco-Scanner Stats:',
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        fontFamily: "OpenSans",
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      fontFamily: "OpenSans",
                       shadows: <Shadow>[
                         Shadow(color: Colors.black12, offset: Offset(1, 1))
                       ],
-                        color: Colors.white, ), textAlign: TextAlign.center,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  Padding(padding: EdgeInsets.only(top: 15),),
+                  Padding(
+                    padding: EdgeInsets.only(top: 15),
+                  ),
                   Text(
                     'Scanned: ' + totalScans.toString(),
                     style: TextStyle(
@@ -82,7 +88,8 @@ class _MainDrawerState extends State<MainDrawer> {
                         shadows: <Shadow>[
                           Shadow(color: Colors.black12, offset: Offset(1, 1))
                         ],
-                        color: Colors.white),textAlign: TextAlign.justify,
+                        color: Colors.white),
+                    textAlign: TextAlign.justify,
                   ),
                   Text(
                     'Animal-tested: ' + crueltyScans.toString(),
@@ -93,7 +100,8 @@ class _MainDrawerState extends State<MainDrawer> {
                         shadows: <Shadow>[
                           Shadow(color: Colors.black12, offset: Offset(1, 1))
                         ],
-                        color: Colors.white),textAlign: TextAlign.left,
+                        color: Colors.white),
+                    textAlign: TextAlign.left,
                   ),
                   Text(
                     'No animal-tested: ' + crueltyFreeScans.toString(),
@@ -104,7 +112,8 @@ class _MainDrawerState extends State<MainDrawer> {
                         shadows: <Shadow>[
                           Shadow(color: Colors.black12, offset: Offset(1, 1))
                         ],
-                        color: Colors.white),textAlign: TextAlign.left,
+                        color: Colors.white),
+                    textAlign: TextAlign.left,
                   ),
                 ],
               ),
@@ -113,7 +122,9 @@ class _MainDrawerState extends State<MainDrawer> {
           SizedBox(
             height: 20,
           ),
-          Column(children: widget.drawerOptions,)
+          Column(
+            children: widget.drawerOptions,
+          )
         ],
       ),
     );

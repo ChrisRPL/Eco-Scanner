@@ -4,11 +4,9 @@ import 'package:splashscreen/splashscreen.dart';
 
 import 'package:eco_scanner/main_screens/home_page.dart';
 
-
-void main() =>  runApp(MaterialApp(
-  debugShowCheckedModeBanner: false,
-  home: MyApp()
-));
+void main() {
+  runApp(MaterialApp(debugShowCheckedModeBanner: false, home: MyApp()));
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -25,17 +23,20 @@ class _MyAppState extends State<MyApp> {
       loaderColor: Colors.white,
       photoSize: 100.0,
       navigateAfterSeconds: HomePage(),
-      title: Text("Eco Scanner", style: TextStyle(fontWeight: FontWeight.normal, fontSize: 40, fontFamily: "OpenSans", color: Colors.white, shadows: [
-        Shadow(
-          blurRadius: 3.0,
-          color: Colors.black12,
-          offset: Offset(3.0, 3.0),
-        ),
-      ],)),
-
-
+      title: Text("Eco Scanner",
+          style: TextStyle(
+            fontWeight: FontWeight.normal,
+            fontSize: 40,
+            fontFamily: "OpenSans",
+            color: Colors.white,
+            shadows: [
+              Shadow(
+                blurRadius: 3.0,
+                color: Colors.black12,
+                offset: Offset(3.0, 3.0),
+              ),
+            ],
+          )),
     );
   }
 }
-
-

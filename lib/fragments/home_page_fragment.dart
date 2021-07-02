@@ -3,9 +3,7 @@ import 'package:eco_scanner/widgets/insert_barcode.dart';
 import 'package:eco_scanner/widgets/start_info_widget.dart';
 import 'package:flutter/material.dart';
 
-
 import 'package:eco_scanner/widgets/custom_dialog.dart';
-
 
 class HomePageFragment extends StatefulWidget {
   var scanQr;
@@ -25,7 +23,6 @@ class HomePageFragmentState extends State<HomePageFragment> {
 
   HomePageFragmentState(this.scanQr, this.checkProductInWeb);
 
-
   _showBarcodeInsertSheet(BuildContext context) {
     showModalBottomSheet(
         context: context,
@@ -34,25 +31,26 @@ class HomePageFragmentState extends State<HomePageFragment> {
         backgroundColor: Colors.transparent,
         builder: (ctx) {
           return GestureDetector(
-            onTap: (){},
-            child: InsertBarcode(checkProductInWeb)
-          );
+              onTap: () {}, child: InsertBarcode(checkProductInWeb));
         });
   }
 
   _checkInternetConnectivity(var action) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
-      showDialog(context: context, builder: (ctx) => CustomDialog(
-        buttonText: "OK",
-        title: "Oooppsss!",
-        description:"To use this function, you have to be connected to internet!",
-        avatarColor: Colors.orange,
-        icon: Icons.warning,
-        dialogAction: (){
-          Navigator.of(context).pop();
-        },
-      ),
+      showDialog(
+          context: context,
+          builder: (ctx) => CustomDialog(
+                buttonText: "OK",
+                title: "Oooppsss!",
+                description:
+                    "To use this function, you have to be connected to internet!",
+                avatarColor: Colors.orange,
+                icon: Icons.warning,
+                dialogAction: () {
+                  Navigator.of(context).pop();
+                },
+              ),
           barrierDismissible: false);
     } else {
       action();
@@ -61,7 +59,6 @@ class HomePageFragmentState extends State<HomePageFragment> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Container(
         color: Colors.lightGreen,
@@ -77,18 +74,22 @@ class HomePageFragmentState extends State<HomePageFragment> {
                   child: FloatingActionButton.extended(
                     heroTag: "1",
                     icon: Icon(Icons.center_focus_weak),
-                    label: Text("Scan barcode", style: TextStyle(fontWeight: FontWeight.normal,
-                      fontFamily: "OpenSans",
-                      fontSize: 15,
-                      shadows: [
-                        Shadow(
-                          blurRadius: 3.0,
-                          color: Colors.black12,
-                          offset: Offset(3.0, 3.0),
-                        ),
-                      ],),
+                    label: Text(
+                      "Scan barcode",
+                      style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontFamily: "OpenSans",
+                        fontSize: 15,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 3.0,
+                            color: Colors.black12,
+                            offset: Offset(3.0, 3.0),
+                          ),
+                        ],
+                      ),
                     ),
-                    onPressed: ()=>_checkInternetConnectivity(scanQr),
+                    onPressed: () => _checkInternetConnectivity(scanQr),
                     backgroundColor: Colors.lime,
                   ),
                 ),
@@ -97,18 +98,23 @@ class HomePageFragmentState extends State<HomePageFragment> {
                   child: FloatingActionButton.extended(
                     heroTag: "2",
                     icon: Icon(Icons.create),
-                    label: Text("Insert barcode", style: TextStyle(fontWeight: FontWeight.normal,
-                      fontFamily: "OpenSans",
-                      fontSize: 15,
-                      shadows: [
-                        Shadow(
-                          blurRadius: 3.0,
-                          color: Colors.black12,
-                          offset: Offset(3.0, 3.0),
-                        ),
-                      ],),
+                    label: Text(
+                      "Insert barcode",
+                      style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontFamily: "OpenSans",
+                        fontSize: 15,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 3.0,
+                            color: Colors.black12,
+                            offset: Offset(3.0, 3.0),
+                          ),
+                        ],
+                      ),
                     ),
-                    onPressed: ()=>_checkInternetConnectivity(()=>_showBarcodeInsertSheet(context)),
+                    onPressed: () => _checkInternetConnectivity(
+                        () => _showBarcodeInsertSheet(context)),
                     backgroundColor: Colors.lime,
                   ),
                 ),

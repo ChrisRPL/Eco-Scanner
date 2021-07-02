@@ -17,23 +17,23 @@ class DbManager {
   static const String DB_NAME = 'products.db';
 
   Future<Database> get db async {
-    if(_db != null){
+    if (_db != null) {
       return _db;
     }
     _db = await initDb();
     return _db;
   }
 
-  initDb() async{
+  initDb() async {
     io.Directory directory = await getApplicationDocumentsDirectory();
     String path = join(directory.path, DB_NAME);
     var db = await openDatabase(path, version: 1, onCreate: _onCreate);
     return db;
   }
 
-  _onCreate(Database db, int version) async{
-      await db.execute("CREATE TABLE $TABLE ($ID INTEGER PRIMARY KEY, $NAME TEXT,"
-          "$COMPANY_NAME TEXT, $IMAGE_URL TEXT, $BARCODE TEXT, $IS_CRUELTY INTEGER)");
+  _onCreate(Database db, int version) async {
+    await db.execute("CREATE TABLE $TABLE ($ID INTEGER PRIMARY KEY, $NAME TEXT,"
+        "$COMPANY_NAME TEXT, $IMAGE_URL TEXT, $BARCODE TEXT, $IS_CRUELTY INTEGER)");
   }
 
   Future<ProductItem> save(ProductItem productItem) async {
@@ -44,11 +44,11 @@ class DbManager {
 
   Future<List<ProductItem>> getAllProducts() async {
     var dbClient = await db;
-    List<Map> maps = await dbClient.query(TABLE, columns: [ID, NAME, COMPANY_NAME, IMAGE_URL, BARCODE, IS_CRUELTY]);
-    //List<Map> maps = await dbClient.query("SELECT * FROM $TABLE");
+    List<Map> maps = await dbClient.query(TABLE,
+        columns: [ID, NAME, COMPANY_NAME, IMAGE_URL, BARCODE, IS_CRUELTY]);
     List<ProductItem> products = [];
-    if(maps.length>0) {
-      for(int i=0; i<maps.length; i++){
+    if (maps.length > 0) {
+      for (int i = 0; i < maps.length; i++) {
         products.add(ProductItem.fromMap(maps[i]));
       }
     }
@@ -70,6 +70,4 @@ class DbManager {
     var dbClient = await db;
     dbClient.close();
   }
-
 }
-

@@ -8,7 +8,8 @@ class InsertBarcode extends StatefulWidget {
   InsertBarcode(this.getProductFromWeb);
 
   @override
-  _InsertBarcodeState createState() => _InsertBarcodeState(this.getProductFromWeb);
+  _InsertBarcodeState createState() =>
+      _InsertBarcodeState(this.getProductFromWeb);
 }
 
 class _InsertBarcodeState extends State<InsertBarcode> {
@@ -20,12 +21,12 @@ class _InsertBarcodeState extends State<InsertBarcode> {
 
   @override
   Widget build(BuildContext context) {
-
     return SingleChildScrollView(
       child: Card(
         elevation: 8,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(14.0), topRight: Radius.circular(14.0)),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(14.0), topRight: Radius.circular(14.0)),
         ),
         color: Colors.white,
         child: Container(
@@ -38,10 +39,12 @@ class _InsertBarcodeState extends State<InsertBarcode> {
           child: Column(
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(
-                    right: 30, left: 30, top: 15, bottom: 15
+                margin:
+                    EdgeInsets.only(right: 30, left: 30, top: 15, bottom: 15),
+                child: Image.asset(
+                  "assets/product.png",
+                  fit: BoxFit.fitWidth,
                 ),
-                child: Image.asset("assets/product.png", fit: BoxFit.fitWidth,),
               ),
               Form(
                 key: _formKey,
@@ -49,14 +52,11 @@ class _InsertBarcodeState extends State<InsertBarcode> {
                   controller: barcode,
                   decoration: new InputDecoration(
                     labelText: "Insert barcode",
-                    labelStyle: TextStyle(
-                        color: Colors.green
-                    ),
+                    labelStyle: TextStyle(color: Colors.green),
                     fillColor: Colors.white,
                     enabledBorder: new OutlineInputBorder(
                       borderRadius: new BorderRadius.circular(25.0),
-                      borderSide: new BorderSide(
-                      ),
+                      borderSide: new BorderSide(),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: new BorderRadius.circular(25.0),
@@ -66,9 +66,9 @@ class _InsertBarcodeState extends State<InsertBarcode> {
                     ),
                   ),
                   validator: (val) {
-                    if(val.length==0) {
+                    if (val.length == 0) {
                       return "Please provide valid barcode!";
-                    }else{
+                    } else {
                       return null;
                     }
                   },
@@ -77,32 +77,44 @@ class _InsertBarcodeState extends State<InsertBarcode> {
               ),
               Container(
                 margin: EdgeInsets.only(top: 10),
-                child: OutlineButton(onPressed: (){
-                  if(_formKey.currentState.validate()) {
-                    getProductFromWeb(barcode.text);
-                    Navigator.of(context).pop();
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(
-                            builder: (BuildContext ctx) => LoadingPage()));
-                  }
+                child: OutlineButton(
+                  onPressed: () {
+                    if (_formKey.currentState.validate()) {
+                      getProductFromWeb(barcode.text);
+                      Navigator.of(context).pop();
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext ctx) => LoadingPage()));
+                    }
                   },
                   splashColor: Colors.lime,
-                  shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(8.0)),
+                  shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(8.0)),
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),
-                    child: Text("CHECK!", style: TextStyle(fontFamily: "OpenSans", fontWeight: FontWeight.normal, fontSize: 18, color: Colors.lightGreen, shadows: [
-                      Shadow(
-                        blurRadius: 3.0,
-                        color: Colors.black12,
-                        offset: Offset(1.5, 1.5),
+                    child: Text(
+                      "CHECK!",
+                      style: TextStyle(
+                        fontFamily: "OpenSans",
+                        fontWeight: FontWeight.normal,
+                        fontSize: 18,
+                        color: Colors.lightGreen,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 3.0,
+                            color: Colors.black12,
+                            offset: Offset(1.5, 1.5),
+                          ),
+                        ],
                       ),
-                    ],),),
+                    ),
                   ),
                   borderSide: BorderSide(
                       color: Colors.lightGreen,
                       style: BorderStyle.solid,
-                      width: 1.2
-                  ),),
+                      width: 1.2),
+                ),
               )
             ],
           ),

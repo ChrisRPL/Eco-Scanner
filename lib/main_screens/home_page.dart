@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:eco_scanner/fragments/full_cruelty_list.dart';
 import 'package:eco_scanner/fragments/home_page_fragment.dart';
 import 'package:eco_scanner/fragments/tested_fragment.dart';
+import 'package:eco_scanner/functions/secret_loader.dart';
 import 'package:eco_scanner/main_screens/loading_page.dart';
 import 'package:eco_scanner/main_screens/product_review.dart';
 import 'package:eco_scanner/models/drawer_item.dart';
+import 'package:eco_scanner/models/secret.dart';
 import 'package:eco_scanner/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -14,14 +18,20 @@ import 'package:html/parser.dart' show parse;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:eco_scanner/widgets/drawer.dart';
 
-
 class HomePage extends StatefulWidget {
-
-
   final drawerItems = [
-    new DrawerItem('Home Page', Icons.home,),
-    new DrawerItem( 'My products', Icons.star,),
-    new DrawerItem( 'Cruelty products list', Icons.list,)
+    new DrawerItem(
+      'Home Page',
+      Icons.home,
+    ),
+    new DrawerItem(
+      'My products',
+      Icons.star,
+    ),
+    new DrawerItem(
+      'Cruelty products list',
+      Icons.list,
+    )
   ];
 
   @override
@@ -34,7 +44,6 @@ class HomePageState extends State<HomePage> {
   String result;
   var companyName;
 
-
   bool findCompanyInProduct(var listOfMatches, var productName) {
     var isCruelty = false;
 
@@ -42,28 +51,39 @@ class HomePageState extends State<HomePage> {
     RegExp regExp4 = RegExp("\\(.+\\)");
 
     for (int i = 0; i < listOfMatches.length; i++) {
-
       //EXTRACT COMPANY NAME FROM HTML AND CLEAN STRING
-      var crueltyCompany = listOfMatches[i].group(0).replaceAll("amp;", "")
-          .replaceAll("\\u0027", "'").replaceAll("\"com_ComName\":", "")
+      var crueltyCompany = listOfMatches[i]
+          .replaceAll("amp;", "")
+          .replaceAll("\\u0027", "'")
+          .replaceAll("\"com_ComName\":", "")
           .replaceAll("\"", "");
 
       if (crueltyCompany.contains("(")) {
-
-        var companyFirstName = crueltyCompany.replaceAll(
-            regExp4.allMatches(crueltyCompany).toList()[0].group(0), "")
+        var companyFirstName = crueltyCompany
+            .replaceAll(
+                regExp4.allMatches(crueltyCompany).toList()[0].group(0), "")
             .replaceAll(" ", "")
             .toLowerCase();
 
-        var secondCompanyName = regExp4.allMatches(crueltyCompany).toList()[0]
-            .group(0).replaceAll("(", "").replaceAll(")", "").replaceAll(
-            " ", "")
+        var secondCompanyName = regExp4
+            .allMatches(crueltyCompany)
+            .toList()[0]
+            .group(0)
+            .replaceAll("(", "")
+            .replaceAll(")", "")
+            .replaceAll(" ", "")
             .toLowerCase();
 
-        isCruelty = (productName.toString().toLowerCase().replaceAll(" ", "").contains(
-            secondCompanyName) ||
-            productName.toString().toLowerCase().replaceAll(" ", "").contains(
-                companyFirstName));
+        isCruelty = (productName
+                .toString()
+                .toLowerCase()
+                .replaceAll(" ", "")
+                .contains(secondCompanyName) ||
+            productName
+                .toString()
+                .toLowerCase()
+                .replaceAll(" ", "")
+                .contains(companyFirstName));
 
         // BREAK THE LOOP IF PRODUCT IS CRUELTY
         if (isCruelty) {
@@ -72,9 +92,10 @@ class HomePageState extends State<HomePage> {
           break;
         }
       } else {
-
-        isCruelty = productName.toString().toLowerCase().contains(
-                crueltyCompany.toLowerCase());
+        isCruelty = productName
+            .toString()
+            .toLowerCase()
+            .contains(crueltyCompany.toLowerCase());
 
         if (isCruelty) {
           companyName = crueltyCompany;
@@ -88,8 +109,6 @@ class HomePageState extends State<HomePage> {
   }
 
   Future getProductFromWeb(String barcode) async {
-
-    var dataToExtract;
     var imageUrl;
     var productName;
     var isCruelty = false;
@@ -98,96 +117,72 @@ class HomePageState extends State<HomePage> {
     Navigator.push(context,
         MaterialPageRoute(builder: (BuildContext ctx) => LoadingPage()));
 
-
     var client = http.Client();
-    Response response = await client.get("https://features.peta.org/cruelty-free-company-search/cruelty_free_companies_search.aspx?Dotest=8");
+    Response response = await client
+        .get("https://crueltyfree.peta.org/companies-do-test/?per_page=all");
     var document = parse(response.body);
+    var companyNamesElements = document
+        .getElementsByClassName("search-results")[0]
+        .getElementsByTagName("li");
+    var listOfMatches = companyNamesElements
+        .map((e) => e.getElementsByTagName("a")[0].attributes["title"])
+        .toList();
 
-    Response response2 = await client.get("https://www.barcodelookup.com/" + barcode);
-    var document2 = parse(response2.body);
+    Secret secret = await SecretLoader(secretPath: "secrets.json").load();
 
-    //REGULAR EXPRESSION FOR EXTRACTING COMPANY FROM HTML
-    RegExp regExp = RegExp("\"com_ComName\":\"[^,]+\"");
+    var queryRequest = 'https://www.googleapis.com/customsearch/v1?key=' +
+        secret.apiKey +
+        '&cx=' +
+        secret.idKey +
+        '&q=' +
+        barcode +
+        '&searchType=image';
 
-    var listOfMatches = regExp.allMatches(document.outerHtml).toList();
+    debugPrint(queryRequest);
 
-    //REGULAR EXPRESSION FOR EXTRACTING IMAGE URL FROM HTML
-    RegExp regExp2 = RegExp("<img src=\.+>");
-    //REGULAR EXPRESSION FOR EXTRACTING PRODUCT NAME URL FROM HTML
-    RegExp regExp3 = RegExp("alt=\"\.+\" id");
-    dataToExtract = regExp2.allMatches(document2.outerHtml).toList()[1].group(0);
-    
+    var googleResponse = await http.get(Uri.parse(queryRequest));
 
-    //IF PRODUCT DATA NOT FOUND
-    if(dataToExtract.contains("Search for another product")) {
-      //SEARCF FOR PRODUCT NAME IN THE BROWSER
-      response2 = await client.get("https://pl.search.yahoo.com/search?q=" + barcode);
-      document2 = parse(response2.body);
-      String product="";
+    debugPrint(googleResponse.body);
+    Map<String, dynamic> responseJson = jsonDecode(googleResponse.body);
+    var results = responseJson['items'] as List;
+    var firstResult = results[0];
 
-      //GET FIRST RESULT WHICH CONTAINS PRODUCT NAME
-      try {
-        product = document2.querySelectorAll("h3.title")[0].text.length >
-            4
-            ? document2.querySelectorAll("h3.title")[0].text.split(" ")[0] +
-            " " + document2.querySelectorAll("h3.title")[0].text.split(" ")[1] +
-            " " +
-            document2.querySelectorAll("h3.title")[0].text.split(" ")[2] + " " +
-            document2.querySelectorAll("h3.title")[0].text.split(" ")[3]
-            : document2.querySelectorAll("h3.title")[0].text;
-      }catch(exception){
-        Navigator.of(context).pop();
-        showDialog(context: context, builder: (ctx) => CustomDialog(
-          buttonText: "OK I GOT IT",
-          title: "Oooppsss!",
-          description:"It looks like we could not find that product in the database!",
-          avatarColor: Colors.red,
-          icon: Icons.sentiment_dissatisfied,
-          dialogAction: () {
-            Navigator.of(context).pop();
-          },
-        ),
-            barrierDismissible: false);
-        return;
-    }
-
-      isCruelty = findCompanyInProduct(listOfMatches, product);
-      debugPrint(document2.querySelectorAll("h3.title")[0].text);
-      imageUrl="";
-      productName = "";
-      companyName="";
-    } else {
-      try {
-        imageUrl = dataToExtract.replaceAll("<img src=\"", "").split("\"")[0];
-        productName =
-        regExp3.allMatches(dataToExtract).toList()[0].group(0).split("\"")[1];
-        isCruelty = findCompanyInProduct(listOfMatches, productName);
-      }catch(exception){
-        Navigator.of(context).pop();
-        showDialog(context: context, builder: (ctx) => CustomDialog(
-          buttonText: "OK I GOT IT",
-          title: "Oooppsss!",
-          description:"It looks like we could not find that product in the database!",
-          avatarColor: Colors.red,
-          icon: Icons.sentiment_dissatisfied,
-          dialogAction: () {
-            Navigator.of(context).pop();
-          },
-        ),
-            barrierDismissible: false);
-        return;
-      }
+    try {
+      imageUrl = firstResult['image']['thumbnailLink'];
+      productName = firstResult['title'];
+      isCruelty = findCompanyInProduct(listOfMatches, productName);
+    } catch (exception) {
+      Navigator.of(context).pop();
+      showDialog(
+          context: context,
+          builder: (ctx) => CustomDialog(
+                buttonText: "OK I GOT IT",
+                title: "Oooppsss!",
+                description:
+                    "It looks like we could not find that product in the database!",
+                avatarColor: Colors.red,
+                icon: Icons.sentiment_dissatisfied,
+                dialogAction: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+          barrierDismissible: false);
+      return;
     }
 
     !isCruelty ? _incrementCrueltyFreeProducts() : _incrementCrueltyProducts();
 
     //SHOW PAGE WITH PRODUCT REVIEW
     Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (BuildContext ctx) => ProductReview(name: productName, imageUrl: imageUrl, isCruelty: isCruelty, companyName: companyName, productBarcode: barcode,)));
-
-
-
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext ctx) => ProductReview(
+                  name: productName,
+                  imageUrl: imageUrl,
+                  isCruelty: isCruelty,
+                  companyName: companyName,
+                  productBarcode: barcode,
+                )));
   }
 
   _incrementQrScans() async {
@@ -220,7 +215,6 @@ class HomePageState extends State<HomePage> {
       if (ex.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
           this.result = "Camera permission was denied";
-
         });
       } else {
         setState(() {
@@ -237,8 +231,6 @@ class HomePageState extends State<HomePage> {
       });
     }
   }
-
-
 
   int _selectedDrawerIndex = 0;
 
@@ -261,10 +253,8 @@ class HomePageState extends State<HomePage> {
     Navigator.of(context).pop();
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -272,35 +262,42 @@ class HomePageState extends State<HomePage> {
     var drawerOptions = <Widget>[];
     for (var i = 0; i < widget.drawerItems.length; i++) {
       var d = widget.drawerItems[i];
-      drawerOptions.add(
-          new ListTile(
-            leading: new Icon(d.icon, size: 36),
-            title: new Text(d.title, style: TextStyle(
+      drawerOptions.add(new ListTile(
+        leading: new Icon(d.icon, size: 36),
+        title: new Text(d.title,
+            style: TextStyle(
               fontFamily: 'OpenSans',
               fontSize: 24,
               fontWeight: FontWeight.bold,
             )),
-            selected: i == _selectedDrawerIndex,
-            onTap: () => onSelectItem(i),
-          )
-      );
+        selected: i == _selectedDrawerIndex,
+        onTap: () => onSelectItem(i),
+      ));
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Eco Scanner", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "OpenSans", color: Colors.white, shadows: [
-          Shadow(
-            blurRadius: 3.0,
-            color: Colors.black12,
-            offset: Offset(3.0, 3.0),
+        title: Text(
+          "Eco Scanner",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontFamily: "OpenSans",
+            color: Colors.white,
+            shadows: [
+              Shadow(
+                blurRadius: 3.0,
+                color: Colors.black12,
+                offset: Offset(3.0, 3.0),
+              ),
+            ],
           ),
-        ],),),
+        ),
         backgroundColor: Colors.transparent,
         actions: <Widget>[
           IconButton(icon: Icon(Icons.center_focus_weak), onPressed: _scanQR)
         ],
       ),
-      drawer:  MainDrawer(drawerOptions),
+      drawer: MainDrawer(drawerOptions),
       body: _getDrawerItemWidget(_selectedDrawerIndex),
     );
   }

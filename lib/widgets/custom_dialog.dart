@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 
-import 'package:eco_scanner/main_screens/home_page.dart';
-
 class CustomDialog extends StatelessWidget {
   final String title, description, buttonText;
   final IconData icon;
   final avatarColor;
   var dialogAction;
 
-  CustomDialog({
-    @required this.title,
-    @required this.description,
-    @required this.buttonText,
-    this.icon,
-    this.avatarColor,
-    this.dialogAction
-  });
+  CustomDialog(
+      {@required this.title,
+      @required this.description,
+      @required this.buttonText,
+      this.icon,
+      this.avatarColor,
+      this.dialogAction});
 
   dialogContent(BuildContext context) {
     return Stack(
@@ -75,7 +72,11 @@ class CustomDialog extends StatelessWidget {
           child: CircleAvatar(
             backgroundColor: avatarColor,
             radius: Consts.avatarRadius,
-            child: Icon(icon, color: Colors.white, size: 50,),
+            child: Icon(
+              icon,
+              color: Colors.white,
+              size: 50,
+            ),
           ),
         ),
       ],
@@ -93,8 +94,6 @@ class CustomDialog extends StatelessWidget {
       child: dialogContent(context),
     );
   }
-
-
 }
 
 class Consts {

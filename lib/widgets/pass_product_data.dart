@@ -9,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:eco_scanner/widgets/custom_dialog.dart';
 import 'package:eco_scanner/main_screens/home_page.dart';
 
-
 class PassProductData extends StatefulWidget {
   bool isCruelty;
   String barcode;
@@ -17,7 +16,8 @@ class PassProductData extends StatefulWidget {
   PassProductData(this.isCruelty, this.barcode);
 
   @override
-  _PassProductDataState createState() => _PassProductDataState(isCruelty, barcode);
+  _PassProductDataState createState() =>
+      _PassProductDataState(isCruelty, barcode);
 }
 
 class _PassProductDataState extends State<PassProductData> {
@@ -30,9 +30,6 @@ class _PassProductDataState extends State<PassProductData> {
 
   _PassProductDataState(this.isCruelty, this.barcode);
   final _formKey = GlobalKey<FormState>();
-
-
-
 
   _getImageFile(ImageSource source) async {
     var image = await ImagePicker.pickImage(source: source);
@@ -52,18 +49,13 @@ class _PassProductDataState extends State<PassProductData> {
         iosUiSettings: IOSUiSettings(
           minimumAspectRatio: 1.0,
           aspectRatioLockEnabled: true,
-        )
-    );
-
-
+        ));
 
     setState(() {
       _image = croppedFile;
       isImageLoaded = true;
     });
   }
-
-
 
   @override
   void initState() {
@@ -74,16 +66,14 @@ class _PassProductDataState extends State<PassProductData> {
     companyName = TextEditingController();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Card(
         elevation: 8,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(14), topRight: Radius.circular(14))
-        ),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(14), topRight: Radius.circular(14))),
         child: Container(
           padding: EdgeInsets.only(
             top: 10,
@@ -94,56 +84,81 @@ class _PassProductDataState extends State<PassProductData> {
           child: Column(
             children: <Widget>[
               Card(
-                color: Colors.lightGreen,
-                elevation: 8,
+                  color: Colors.lightGreen,
+                  elevation: 8,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10))
-                  ),
-                  child: !isImageLoaded ? Icon(Icons.image, color: Colors.white, size: 130,) :
-              Image.file(_image, width: 130, height: 130, fit: BoxFit.cover,)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(right: 5),
-                  child: RaisedButton.icon(
-                    onPressed: (){ _getImageFile(ImageSource.camera);},
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10))
-                    ),
-                    color: Colors.grey,
-                    icon: Icon(Icons.photo_camera, color: Colors.white,),
-                    label:
-                    Text("TAKE PHOTO", style: TextStyle(fontFamily: "OpenSans" ,fontWeight: FontWeight.normal, color: Colors.white, shadows: [
-                      Shadow(
-                        blurRadius: 1.0,
-                        color: Colors.black26,
-                        offset: Offset(1.0, 1.0),
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: !isImageLoaded
+                      ? Icon(
+                          Icons.image,
+                          color: Colors.white,
+                          size: 130,
+                        )
+                      : Image.file(
+                          _image,
+                          width: 130,
+                          height: 130,
+                          fit: BoxFit.cover,
+                        )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.only(right: 5),
+                    child: RaisedButton.icon(
+                      onPressed: () {
+                        _getImageFile(ImageSource.camera);
+                      },
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      color: Colors.grey,
+                      icon: Icon(
+                        Icons.photo_camera,
+                        color: Colors.white,
                       ),
-                    ])),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 5),
-                  child: RaisedButton.icon(
-                    onPressed: (){ _getImageFile(ImageSource.gallery);},
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10))
+                      label: Text("TAKE PHOTO",
+                          style: TextStyle(
+                              fontFamily: "OpenSans",
+                              fontWeight: FontWeight.normal,
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 1.0,
+                                  color: Colors.black26,
+                                  offset: Offset(1.0, 1.0),
+                                ),
+                              ])),
                     ),
-                    color: Colors.grey,
-                    icon: Icon(Icons.add_photo_alternate, color: Colors.white,),
-                    label:
-                    Text("FROM GALLERY", style: TextStyle(fontFamily: "OpenSans" ,fontWeight: FontWeight.normal, color: Colors.white, shadows: [
-                      Shadow(
-                        blurRadius: 1.0,
-                        color: Colors.black26,
-                        offset: Offset(1.0, 1.0),
-                      ),
-                    ])),
                   ),
-                ),
-              ],
-            ),
+                  Container(
+                    margin: EdgeInsets.only(left: 5),
+                    child: RaisedButton.icon(
+                      onPressed: () {
+                        _getImageFile(ImageSource.gallery);
+                      },
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      color: Colors.grey,
+                      icon: Icon(
+                        Icons.add_photo_alternate,
+                        color: Colors.white,
+                      ),
+                      label: Text("FROM GALLERY",
+                          style: TextStyle(
+                              fontFamily: "OpenSans",
+                              fontWeight: FontWeight.normal,
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 1.0,
+                                  color: Colors.black26,
+                                  offset: Offset(1.0, 1.0),
+                                ),
+                              ])),
+                    ),
+                  ),
+                ],
+              ),
               Form(
                 key: _formKey,
                 child: Column(
@@ -154,14 +169,11 @@ class _PassProductDataState extends State<PassProductData> {
                         controller: productName,
                         decoration: new InputDecoration(
                           labelText: "Product name",
-                          labelStyle: TextStyle(
-                              color: Colors.green
-                          ),
+                          labelStyle: TextStyle(color: Colors.green),
                           fillColor: Colors.white,
                           enabledBorder: new OutlineInputBorder(
                             borderRadius: new BorderRadius.circular(25.0),
-                            borderSide: new BorderSide(
-                            ),
+                            borderSide: new BorderSide(),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: new BorderRadius.circular(25.0),
@@ -171,9 +183,9 @@ class _PassProductDataState extends State<PassProductData> {
                           ),
                         ),
                         validator: (val) {
-                          if(val.length==0) {
+                          if (val.length == 0) {
                             return "Please provide valid product name!";
-                          }else{
+                          } else {
                             return null;
                           }
                         },
@@ -186,14 +198,11 @@ class _PassProductDataState extends State<PassProductData> {
                         controller: companyName,
                         decoration: new InputDecoration(
                           labelText: "Company name",
-                          labelStyle: TextStyle(
-                              color: Colors.green
-                          ),
+                          labelStyle: TextStyle(color: Colors.green),
                           fillColor: Colors.white,
                           enabledBorder: new OutlineInputBorder(
                             borderRadius: new BorderRadius.circular(25.0),
-                            borderSide: new BorderSide(
-                            ),
+                            borderSide: new BorderSide(),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: new BorderRadius.circular(25.0),
@@ -203,9 +212,9 @@ class _PassProductDataState extends State<PassProductData> {
                           ),
                         ),
                         validator: (val) {
-                          if(val.length==0) {
+                          if (val.length == 0) {
                             return "Please provide valid company name!";
-                          }else{
+                          } else {
                             return null;
                           }
                         },
@@ -218,62 +227,79 @@ class _PassProductDataState extends State<PassProductData> {
               Container(
                 margin: EdgeInsets.only(top: 10),
                 child: OutlineButton(
-                  onPressed: (){
-                    if(_image==null) {
-                      showDialog(context: context, builder: (ctx) =>
-                          CustomDialog(
-                            buttonText: "OK I GOT IT",
-                            title: "Oooppsss!",
-                            description: "Please add product image to add product to the list!",
-                            avatarColor: Colors.orange,
-                            icon: Icons.warning,
-                            dialogAction: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
+                  onPressed: () {
+                    if (_image == null) {
+                      showDialog(
+                          context: context,
+                          builder: (ctx) => CustomDialog(
+                                buttonText: "OK I GOT IT",
+                                title: "Oooppsss!",
+                                description:
+                                    "Please add product image to add product to the list!",
+                                avatarColor: Colors.orange,
+                                icon: Icons.warning,
+                                dialogAction: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
                           barrierDismissible: false);
-                    }else if(_formKey.currentState.validate()) {
-                      dbManager.save(ProductItem(DateTime
-                          .now()
-                          .millisecond, productName.text, companyName.text,
-                          _image.path, barcode, isCruelty ? 1 : 0));
-                      showDialog(context: context, builder: (ctx) =>
-                          CustomDialog(
-                            buttonText: "OK",
-                            title: "Huurrraayy!",
-                            description: "Your product has been added successfully!",
-                            avatarColor: Colors.lightGreen,
-                            icon: Icons.sentiment_very_satisfied,
-                            dialogAction: () {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext ctx) =>
-                                          HomePage()));
-                            },
-                          ),
+                    } else if (_formKey.currentState.validate()) {
+                      dbManager.save(ProductItem(
+                          DateTime.now().millisecond,
+                          productName.text,
+                          companyName.text,
+                          _image.path,
+                          barcode,
+                          isCruelty ? 1 : 0));
+                      showDialog(
+                          context: context,
+                          builder: (ctx) => CustomDialog(
+                                buttonText: "OK",
+                                title: "Huurrraayy!",
+                                description:
+                                    "Your product has been added successfully!",
+                                avatarColor: Colors.lightGreen,
+                                icon: Icons.sentiment_very_satisfied,
+                                dialogAction: () {
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext ctx) =>
+                                              HomePage()));
+                                },
+                              ),
                           barrierDismissible: false);
                     }
                   },
                   splashColor: Colors.lime,
-                  shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(8.0)),
+                  shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(8.0)),
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),
-                    child: Text("ADD PRODUCT", style: TextStyle(fontFamily: "OpenSans", fontWeight: FontWeight.normal, fontSize: 18, color: Colors.lightGreen, shadows: [
-                      Shadow(
-                        blurRadius: 3.0,
-                        color: Colors.black12,
-                        offset: Offset(1.5, 1.5),
+                    child: Text(
+                      "ADD PRODUCT",
+                      style: TextStyle(
+                        fontFamily: "OpenSans",
+                        fontWeight: FontWeight.normal,
+                        fontSize: 18,
+                        color: Colors.lightGreen,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 3.0,
+                            color: Colors.black12,
+                            offset: Offset(1.5, 1.5),
+                          ),
+                        ],
                       ),
-                    ],),),
+                    ),
                   ),
                   borderSide: BorderSide(
                       color: Colors.lightGreen,
                       style: BorderStyle.solid,
-                      width: 1.2
-                  ),),
+                      width: 1.2),
+                ),
               )
             ],
           ),
