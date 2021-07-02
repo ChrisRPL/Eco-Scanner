@@ -117,37 +117,37 @@ class HomePageState extends State<HomePage> {
     Navigator.push(context,
         MaterialPageRoute(builder: (BuildContext ctx) => LoadingPage()));
 
-    var client = http.Client();
-    Response response = await client
-        .get("https://crueltyfree.peta.org/companies-do-test/?per_page=all");
-    var document = parse(response.body);
-    var companyNamesElements = document
-        .getElementsByClassName("search-results")[0]
-        .getElementsByTagName("li");
-    var listOfMatches = companyNamesElements
-        .map((e) => e.getElementsByTagName("a")[0].attributes["title"])
-        .toList();
-
-    Secret secret = await SecretLoader(secretPath: "secrets.json").load();
-
-    var queryRequest = 'https://www.googleapis.com/customsearch/v1?key=' +
-        secret.apiKey +
-        '&cx=' +
-        secret.idKey +
-        '&q=' +
-        barcode +
-        '&searchType=image';
-
-    debugPrint(queryRequest);
-
-    var googleResponse = await http.get(Uri.parse(queryRequest));
-
-    debugPrint(googleResponse.body);
-    Map<String, dynamic> responseJson = jsonDecode(googleResponse.body);
-    var results = responseJson['items'] as List;
-    var firstResult = results[0];
-
     try {
+      var client = http.Client();
+      Response response = await client
+          .get("https://crueltyfree.peta.org/companies-do-test/?per_page=all");
+      var document = parse(response.body);
+      var companyNamesElements = document
+          .getElementsByClassName("search-results")[0]
+          .getElementsByTagName("li");
+      var listOfMatches = companyNamesElements
+          .map((e) => e.getElementsByTagName("a")[0].attributes["title"])
+          .toList();
+
+      Secret secret = await SecretLoader(secretPath: "secrets.json").load();
+
+      var queryRequest = 'https://www.googleapis.com/customsearch/v1?key=' +
+          secret.apiKey +
+          '&cx=' +
+          secret.idKey +
+          '&q=' +
+          barcode +
+          '&searchType=image';
+
+      debugPrint(queryRequest);
+
+      var googleResponse = await http.get(Uri.parse(queryRequest));
+
+      debugPrint(googleResponse.body);
+      Map<String, dynamic> responseJson = jsonDecode(googleResponse.body);
+      var results = responseJson['items'] as List;
+      var firstResult = results[0];
+
       imageUrl = firstResult['image']['thumbnailLink'];
       productName = firstResult['title'];
       isCruelty = findCompanyInProduct(listOfMatches, productName);
